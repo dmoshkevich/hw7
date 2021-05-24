@@ -108,12 +108,26 @@ def process_text(text: str) -> str:
 def another_process(text: str) -> str:
     return text.replace(':', ',')
 
+def cache_result(func: Callable) -> Callable:
+    cache = {}
+
+    def decorated(*args, **kwargs):
+        key = args.__str__() + kwargs.__str__()
+        if key in cache:
+            print("cache:")
+            return cache[key]
+        res = func(*args, **kwargs)
+        cache[key] = res
+        return res
+    return decorated
+
+
+@cache_result
+def some_func(last_name, first_name, age):
+    return f'Hi {last_name} {first_name}, you are {age} years old'
+
 
 if __name__ == "__main__":
-     long_executing_task()  # print "elapsed time is about <> seconds"
-    # print(potentially_unsafe_func('name'))  # everything is ok
-    # print(potentially_unsafe_func('last_name'))  # error is silented
-    # sum_of_values((1, 3, 5))  # ValueError
-    # show_message('test')  # ValueError
-    # print(process_text('the French revolution resulted in 3 concepts: freedom,equality,fraternity'))
-    # print(another_process('the French revolution resulted in 3 concepts: freedom,equality,fraternity'))
+    print(some_func('shulyak', 'dmitry', 30))  # call
+    print(some_func('ivanov', 'ivan', 25))  # call
+    print(some_func('shulyak', 'dmitry', 30))  # cache
