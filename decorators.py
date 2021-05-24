@@ -30,10 +30,10 @@ def suppress_errors(skip_err: list) -> Callable:
     return outer_wrapper
 
 
-@suppress_errors((
+@suppress_errors([
     KeyError,
     ValueError,
-))
+])
 def potentially_unsafe_func(key: str):
     print(f'Get data by the key {key}')
     data = {'name': 'test', 'age': 30}
